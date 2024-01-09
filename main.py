@@ -1,6 +1,5 @@
 from src.List import List as ls
 
-list1 = ls("babi")
+list1 = ls("turu")
 
-list1.createTask(nameList = "babi", nameTask = "mengalahkan madara", due = "besok")
-
+list1.renameTask("makan", "turu", "bobok")

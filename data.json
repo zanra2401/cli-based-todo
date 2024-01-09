@@ -10,5 +10,17 @@
         "due": "besok"
       }
     }
+  },
+  "turu": {
+    "info": {
+      "status": "pending",
+      "due": "no-due"
+    },
+    "task": {
+      "bobok": {
+        "status": "pending",
+        "due": "habis ini lah bro"
+      }
+    }
   }
 }

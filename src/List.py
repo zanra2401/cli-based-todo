@@ -3,9 +3,11 @@ from src.Task import Task as ts
 
 class List(ts):
     def __init__(self, description, status = "pending", task = "empty", due = "no-due"):
-        print(ts)
+  
         ts.__init__(self, description, status, due)
         self.task = task
+   
+    def createList(self) :
         listToDo = {
                 "info" : ts.getInformation(self),
                 "task" : self.task
@@ -43,6 +45,7 @@ class List(ts):
         return data
 
     def saveList(self, listToSave):
+        listToSave = json.dumps(listToSave, indent = 2)
         with open('data.json', 'w') as json_file:
             json_file.write(listToSave)
     
@@ -57,17 +60,35 @@ class List(ts):
 
     def createTask(self, nameTask, nameList, status = "pending", due = "no-due"):
         data = self.getData()
-        print(type(data))
-        if type(data[nameList]["task"]) != dict:
-            data[nameList]["task"] = {}
-
-        data[nameList]["task"][nameTask] = {
-            "status" : status,
-            "due" : due
-        }
-
-        data = json.dumps(data, indent = 2)
+        data = ts.createTask(self, nameTask, nameList, data, status, due)
         self.saveList(data)
+    
+    def deleteTask(self, nameTask, nameList):
+        data = self.getData()
+        data = ts.deleteTask(self, nameTask, nameList, data)
+        self.saveList(data)
+    
+    def changeDueTasK(self, nameTask, nameList, newTaskDue):
+        data = self.getData()
+        data = super().changeDueTasK(nameTask, nameList, newTaskDue, data)
+        self.saveList(data)
+    
+    def renameTask(self, nameTask, nameList, newTaskName):
+        data = self.getData()
+        data = super().renameTask(nameTask, nameList, newTaskName, data)
+        self.saveList(data)
+    
+    def undoneTask(self, nameTask, nameList):
+        data = self.getData()
+        data = super().undoneTask(nameTask, nameList, data)
+        self.saveList(data)
+    
+    def doneTask(self, nameTask, nameList):
+        data = self.getData()
+        data = super().doneTask(nameTask, nameList, data)
+        self.saveList(data)
+    
+
 
         
 
