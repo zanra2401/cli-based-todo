@@ -1,0 +1,14 @@
+{
+  "babi": {
+    "info": {
+      "status": "pending",
+      "due": "no-due"
+    },
+    "task": {
+      "mengalahkan madara": {
+        "status": "pending",
+        "due": "besok"
+      }
+    }
+  }
+}
