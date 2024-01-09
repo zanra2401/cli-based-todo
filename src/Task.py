@@ -1,14 +1,12 @@
 
 class Task:
-    def __init__(self, description, status = "pending", due = "no-due"):
-        self.description = description
-        self.status = status
-        self.due = due 
+    def __init__(self):
+        pass
      
-    def getInformation(self):
+    def getInformation(due):
         return {
-            "status" : self.status,
-            "due" : self.due
+            "status" : "[task empty]",
+            "due" : due
         }  
 
     def createTask(self, nameTask, nameList, data, status = "pending", due = "no-due"):

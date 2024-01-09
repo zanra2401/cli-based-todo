@@ -1,52 +1,62 @@
 import json
+import os
 from src.Task import Task as ts
 
 class List(ts):
-    def __init__(self, description, status = "pending", task = "empty", due = "no-due"):
-  
-        ts.__init__(self, description, status, due)
-        self.task = task
+    def __init__(self):
+        ts.__init__(self)
    
-    def createList(self) :
+    def createList(self, nameList, task = "empty", due = "no-due"):
         listToDo = {
-                "info" : ts.getInformation(self),
-                "task" : self.task
+                "info" : ts.getInformation(due),
+                "task" : task
                 }
-        data = self.getData()
-        data[self.description] = listToDo
-        dataString = json.dumps(data, indent = 2)
-        self.saveList(dataString)
-        
+        if not os.path.isfile(os.path.join("storage", "data.json")):
+            with open("storage/data.json", "w") as file:
+                file.write("{ " + " }")
 
-    def setStatus(self, status):
-        self.status = status
-
-    def setTask(self, task):
-        self.task = task
-
-    def setDue(self, due):
-        self.due = due
+        data = self.getData() 
+        data[nameList] = listToDo
+        self.saveList(data)
     
-    def getDescription(self):
-        return self.description
+    def calculateStatus(self, data, nameList):
+        totalTask = 0
+        taskDone = 0
+        for i in data[nameList]["task"]:
+            if data[nameList]["task"][i]["status"] == "done":
+                taskDone += 1
+            totalTask += 1
+        percentage = int((taskDone/totalTask) * 100)
+        data[nameList]["info"]["status"] = "[" + str(percentage) + "%" + "]"
+        return data
+ 
+    def deleteList(self, nameList):
+        data = self.getData()
+        data.pop(nameList)
+        self.saveList(data)
+    
+    def renameList(self, nameList, newNameList):
+        data = self.getData()
+        data[newNameList] = data[nameList]
+        data.pop(nameList)
+        self.saveList(data)
+    
+    def changeDueList(self, nameList, newDue):
+        data = self.getData()
+        data[nameList]["info"]["due"] = newDue   
 
-    def getTask(self):
-        return self.task
-
-    def getDue(self):
-        return self.due
-
-    def getStatus(self):
-        return self.status
+    def getStatus(self, nameList):
+        data = self.getData()[nameList]
+        return data["info"]["status"]
     
     def getData(self):
-        f = open("data.json")
+        f = open("storage/data.json")
         data = dict(json.load(f))
         return data
 
     def saveList(self, listToSave):
         listToSave = json.dumps(listToSave, indent = 2)
-        with open('data.json', 'w') as json_file:
+        with open('storage/data.json', 'w') as json_file:
             json_file.write(listToSave)
     
     def getList(self):
@@ -60,12 +70,14 @@ class List(ts):
 
     def createTask(self, nameTask, nameList, status = "pending", due = "no-due"):
         data = self.getData()
-        data = ts.createTask(self, nameTask, nameList, data, status, due)
+        data = super().createTask(nameTask, nameList, data, status, due)
+        data = self.calculateStatus(data, nameList)
         self.saveList(data)
     
     def deleteTask(self, nameTask, nameList):
         data = self.getData()
-        data = ts.deleteTask(self, nameTask, nameList, data)
+        data = super().deleteTask(nameTask, nameList, data)
+        data = self.calculateStatus(data, nameList)
         self.saveList(data)
     
     def changeDueTasK(self, nameTask, nameList, newTaskDue):
@@ -81,15 +93,19 @@ class List(ts):
     def undoneTask(self, nameTask, nameList):
         data = self.getData()
         data = super().undoneTask(nameTask, nameList, data)
+        data = self.calculateStatus(data, nameList)
         self.saveList(data)
     
     def doneTask(self, nameTask, nameList):
         data = self.getData()
         data = super().doneTask(nameTask, nameList, data)
+        data = self.calculateStatus(data, nameList)
         self.saveList(data)
     
-
-
-        
-
-
+    def showTask(self, nameList):
+        data = self.getData()[nameList]["task"]
+        if data == "empty":
+            print("Task Empty :<)")
+            return
+        for n, key in enumerate(data, start=1):
+            print(f"{n}. {key}  Due: {data[key]["due"]} Status : {data[key]["status"]}")

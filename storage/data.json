@@ -1,0 +1,14 @@
+{
+  "tugas-besok": {
+    "info": {
+      "status": "[100%]",
+      "due": "jam-9-pagi"
+    },
+    "task": {
+      "makan": {
+        "status": "done",
+        "due": "no-due"
+      }
+    }
+  }
+}
