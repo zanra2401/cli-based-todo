@@ -44,6 +44,7 @@ class List(ts):
     def changeDueList(self, nameList, newDue):
         data = self.getData()
         data[nameList]["info"]["due"] = newDue   
+        self.saveList(data)
 
     def getStatus(self, nameList):
         data = self.getData()[nameList]
@@ -108,4 +109,4 @@ class List(ts):
             print("Task Empty :<)")
             return
         for n, key in enumerate(data, start=1):
-            print(f"{n}. {key}  Due: {data[key]["due"]} Status : {data[key]["status"]}")
+            print(f"{n}. {key}  | Due: {data[key]['due']} | Status : {data[key]['status']}")

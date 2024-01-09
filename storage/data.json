@@ -1,12 +1,20 @@
 {
-  "tugas-besok": {
+  "tugas-hari-ini": {
     "info": {
-      "status": "[100%]",
-      "due": "jam-9-pagi"
+      "status": "[33%]",
+      "due": "no-due"
     },
     "task": {
-      "makan": {
+      "membersihkan-kamar": {
         "status": "done",
+        "due": "jam-9"
+      },
+      "sikat-gigi": {
+        "status": "pending",
+        "due": "no-due"
+      },
+      "makan": {
+        "status": "pending",
         "due": "no-due"
       }
     }

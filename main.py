@@ -1,6 +1,7 @@
 from src.List import List as ls
 from src.Task import Task as ts
 from src.Checker import Checker as ch
+import os
 
 
 class Main:
@@ -27,6 +28,7 @@ class Main:
                     print(check.isCommandValid(inputCommand)[1])
             else:
                 print(check.isCommandExist(inputCommand["command"], self.location)[1])
+            print("-----------")
 
             
     
@@ -34,7 +36,7 @@ class Main:
         inputCommand = {
             "command" : input.split(" ")[0]
         } 
-        if input[-1] == " ":
+        if input[-1] in (" ", "-"):
             input = input[:-1]
         stop = None
         for i in range(0, len(input)):
@@ -67,50 +69,52 @@ class Main:
         command = input(">> ")
         if command == "close":
             return False
+        elif command == "clear":
+            os.system("cls" if os.name == "nt" else "clear")
+            command = self.getInput()
         return command
     
     def showList(self):
         data = ls().getData()
         for n, key in enumerate(data, start=1):
-            print(f"{n}. {key}  {data[key]["info"]["status"]}")
+            print(f"{n}. {key}  | Due : {data[key]['info']['due']} | {data[key]['info']['status']}")
         
     
     def execute(self, inputCommand):
         if self.location == "List-Container":
-            if inputCommand["command"] in ("delete", "changeDue", "rename", "done", "undone"):
+            if inputCommand["command"] in ("delete", "changeDue", "rename", "done", "undone", "open"):
                 if not ch().isListExist(inputCommand["arg1"]):
-                    print(f"ERROR : {inputCommand["arg1"]} is not exist \"show\" for diplaying list")
+                    print(f"ERROR : {inputCommand['arg1']} is not exist \"show\" for diplaying list")
                     return
-            elif inputCommand["command"] == "create":
-                if ch().isListExist(inputCommand["arg1"]):
-                    print(f"ERROR : {inputCommand["arg1"]} is already exist \"show\" for diplaying list")
-                    return
+            elif inputCommand["command"] in ("create"):
+                if ch().isListExist(inputCommand['arg1']):
+                    print(f"ERROR : {inputCommand['arg1']} is already exist \"show\" for diplaying list")
             if inputCommand["command"] == "create":
                 if "arg2" in inputCommand:
-                    ls().createList(nameList = inputCommand["arg1"], due = inputCommand["arg2"])
+                    ls().createList(nameList = inputCommand['arg1'], due = inputCommand["arg2"])
                 else:
-                    ls().createList(nameList = inputCommand["arg1"]) 
+                    ls().createList(nameList = inputCommand['arg1']) 
             elif inputCommand["command"] == "open":
                 self.location = inputCommand["arg1"]
             elif inputCommand["command"] == "show":
                 self.showList()
             elif inputCommand["command"] == "delete":
-                ls().deleteList(self.location)
+                ls().deleteList(inputCommand["arg1"])
             elif inputCommand["command"] == "rename":
-                ls().renameList(self.location, inputCommand["arg1"])
+                ls().renameList(inputCommand["arg1"], inputCommand["arg2"])
             elif inputCommand["command"] == "changeDue":
-                ls().changeDueList(self.location, inputCommand["arg1"])
+                ls().changeDueList(inputCommand["arg1"], inputCommand["arg2"])
             elif inputCommand["command"] == "exit":
                 print("SEE YOU ^_^")
                 exit()
         else:
             if inputCommand["command"] in ("delete", "changeDue", "rename", "done", "undone"):
                 if not ch().isTaskExist(self.location, inputCommand["arg1"]):
-                    print(f"ERROR : {inputCommand["arg1"]} task is not exist \"show\" for diplaying task")
+                    print(f"ERROR : {inputCommand['arg1']} task is not exist \"show\" for diplaying task")
                     return
-            elif inputCommand["command"] == "create":
+            elif inputCommand["command"] in ("create", "open"):
                 if ch().isTaskExist(self.location, inputCommand["arg1"]):
-                    print(f"ERROR : {inputCommand["arg1"]} task is already exist \"show\" for diplaying task")
+                    print(f"ERROR : {inputCommand['arg1']} task is already exist \"show\" for diplaying task")
                     return
             if inputCommand["command"] == "create":
                 if "arg2" in inputCommand:
@@ -126,9 +130,9 @@ class Main:
             elif inputCommand["command"] == "undone":
                 ls().undoneTask(nameTask=inputCommand["arg1"], nameList=self.location)
             elif inputCommand["command"] == "rename":
-                ls().renameTask(nameList=self.location, nameTask=inputCommand["arg1"], newTaskName=["arg2"])
+                ls().renameTask(nameList=self.location, nameTask=inputCommand["arg1"], newTaskName=inputCommand["arg2"])
             elif inputCommand["command"] == "changeDue":
-                ls().changeDueTasK(nameList=self.location, nameTask=inputCommand["arg1"], newTaskDue=["arg2"])
+                ls().changeDueTasK(nameList=self.location, nameTask=inputCommand["arg1"], newTaskDue=inputCommand["arg2"])
             elif inputCommand["command"] == "exit":
                 self.location = "List-Container"
 
