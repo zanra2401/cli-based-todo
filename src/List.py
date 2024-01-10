@@ -4,14 +4,16 @@ from src.Task import Task as ts
 
 class List(ts):
     def __init__(self):
-        ts.__init__(self)
+        ts.__init__(self) 
+        self.path = os.getcwd()
+        print(self.path)
    
     def createList(self, nameList, task = "empty", due = "no-due"):
         listToDo = {
                 "info" : ts.getInformation(due),
                 "task" : task
                 }
-        if not os.path.isfile(os.path.join("storage", "data.json")):
+        if not os.path.isfile(os.path.join(self.path + "storage", "data.json")):
             with open("storage/data.json", "w") as file:
                 file.write("{ " + " }")
 
@@ -51,6 +53,9 @@ class List(ts):
         return data["info"]["status"]
     
     def getData(self):
+        if not os.path.isfile(os.path.join("storage", "data.json")):
+            with open("storage/data.json", "w") as file:
+                file.write("{ " + " }")
         f = open("storage/data.json")
         data = dict(json.load(f))
         return data

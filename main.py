@@ -21,6 +21,8 @@ class Main:
             if userInput == False:
                 return
             inputCommand = self.inputHandler(userInput)
+            if inputCommand == False:
+                continue
             if check.isCommandExist(inputCommand["command"], self.location)[0]:
                 if check.isCommandValid(inputCommand)[0]:
                     self.execute(inputCommand)
@@ -29,10 +31,26 @@ class Main:
             else:
                 print(check.isCommandExist(inputCommand["command"], self.location)[1])
             print("-----------")
+    
+    def help(self):
+        print("changeDue <nameTask/List> <newDue>")
+        print("rename <nameTask/List> <newFileName>")
+        print("create <nameTask/List> <(optional)due>")
+        print("delete <nameTask/List>")
+        print("open <nameList> ")
+        print("done <nameList> ")
+        print("undone <nameTask> ")
+        print("show (to display List or Task) ")
+        print("exit (back to List-Container)")
+        print("close (closr program))")
+        print("clear (clear screen))")
+        print("help (display help))")
 
             
     
     def inputHandler(self, input):
+        if input == "":
+            return False
         inputCommand = {
             "command" : input.split(" ")[0]
         } 
@@ -71,6 +89,9 @@ class Main:
             return False
         elif command == "clear":
             os.system("cls" if os.name == "nt" else "clear")
+            command = self.getInput()
+        elif command == "help":
+            self.help()
             command = self.getInput()
         return command
     
@@ -135,6 +156,6 @@ class Main:
                 ls().changeDueTasK(nameList=self.location, nameTask=inputCommand["arg1"], newTaskDue=inputCommand["arg2"])
             elif inputCommand["command"] == "exit":
                 self.location = "List-Container"
-
+        
 
 Main()
